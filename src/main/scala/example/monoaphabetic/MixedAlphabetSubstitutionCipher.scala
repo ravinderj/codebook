@@ -1,8 +1,6 @@
 package example.monoaphabetic
 
-import example.Cipher
-
-class MixedAlphabetSubstitutionCipher(key: String) extends Cipher {
+class MixedAlphabetSubstitutionCipher(key: String) extends SubstitutionCipher {
   lazy val substitution: String =
     alphabets.fold(
       key.toUpperCase()
@@ -10,26 +8,4 @@ class MixedAlphabetSubstitutionCipher(key: String) extends Cipher {
       res + char
     else res
     )
-
-  override def encipher(plainText: String): String = {
-    val translation = alphabets
-      .indices
-      .map(index => (alphabets(index), substitution(index).toString))
-    runSubstitution(plainText, Map[String, String](translation: _*))
-  }
-
-  private def runSubstitution(text: String, substitutionMapping: Map[String, String]) = {
-    text
-      .toUpperCase()
-      .split("")
-      .fold("")((res, char) => res + substitutionMapping.getOrElse(char, char))
-  }
-
-  override def decipher(enciphered: String): String = {
-    val translation = alphabets
-      .indices
-      .map(index => (substitution(index).toString, alphabets(index)))
-    runSubstitution(enciphered, Map[String, String](translation: _*))
-      .toLowerCase()
-  }
 }

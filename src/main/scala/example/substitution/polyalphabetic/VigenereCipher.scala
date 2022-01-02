@@ -1,6 +1,7 @@
 package example.substitution.polyalphabetic
 
 import example.Cipher
+import example.Alphabets.alphabets
 
 class VigenereCipher(key: String) extends Cipher {
   override def encipher(plainText: String): String = {
@@ -9,7 +10,7 @@ class VigenereCipher(key: String) extends Cipher {
       val curPosition = alphabets.indexOf(ch.toString)
       val shiftByChar = key(i % key.length).toString
       val shift = alphabets.indexOf(shiftByChar)
-      acc + alphabets((curPosition + shift)% alphabets.length)
+      acc + alphabets((curPosition + shift) % alphabets.length)
     })
   }
 

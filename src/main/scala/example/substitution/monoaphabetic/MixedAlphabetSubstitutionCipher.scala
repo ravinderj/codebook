@@ -1,5 +1,6 @@
 package example.substitution.monoaphabetic
 
+import example.Alphabets.alphabets
 import example.substitution.SubstitutionCipher
 
 class MixedAlphabetSubstitutionCipher(key: String) extends SubstitutionCipher {

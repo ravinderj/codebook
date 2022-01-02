@@ -1,6 +1,7 @@
 package example.substitution
 
 import example.Cipher
+import example.Alphabets.alphabets
 
 abstract class SubstitutionCipher extends Cipher {
   val substitution: String

@@ -5,11 +5,12 @@ import example.Cipher
 abstract class SubstitutionCipher extends Cipher {
   protected val scrambler: Scrambler
 
-  def runSubstitution(text: String, substitutor: Char => Char): String = {
+  def runSubstitution(text: String, substitutor:( Char, Int) => Char): String = {
     text
       .toUpperCase()
       .split("")
-      .fold("")((res, char) => res + substitutor(char.charAt(0)))
+      .zipWithIndex
+      .foldLeft("")((res, char) => res + substitutor(char._1.charAt(0), char._2))
   }
 
   override def encipher(plainText: String): String =

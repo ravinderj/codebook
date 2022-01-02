@@ -4,6 +4,7 @@ import example.Alphabets.alphabets
 
 trait Scrambler {
   def scramble(char: Char): Char
+
   def unscramble(char: Char): Char
 }
 
@@ -40,3 +41,19 @@ object AtbashScrambler extends Scrambler {
   override def unscramble(char: Char): Char = scramble(char).toLower
 }
 
+class MixedAlphabetScrambler(key: String) extends Scrambler {
+  private val upperCasedKey = key.toUpperCase()
+  private val lookup = upperCasedKey + alphabets.filterNot(upperCasedKey.contains).mkString("")
+
+  override def scramble(char: Char): Char = {
+    if (alphabets.contains(char.toString)) {
+      lookup.charAt(alphabets.indexOf(char.toUpper.toString))
+    } else char
+  }
+
+  override def unscramble(char: Char): Char = {
+    if (alphabets.contains(char.toString)) {
+      alphabets(lookup.indexOf(char.toUpper)).charAt(0)
+    } else char
+  }
+}

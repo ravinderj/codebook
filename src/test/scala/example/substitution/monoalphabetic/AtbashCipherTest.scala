@@ -1,6 +1,6 @@
-package example.monoalphabetic
+package example.substitution.monoalphabetic
 
-import example.monoaphabetic.AtbashCipher
+import example.substitution.monoaphabetic.AtbashCipher
 import org.scalatest._
 
 class AtbashCipherTest extends FlatSpec with Matchers {

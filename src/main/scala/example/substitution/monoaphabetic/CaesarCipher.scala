@@ -1,4 +1,6 @@
-package example.monoaphabetic
+package example.substitution.monoaphabetic
+
+import example.substitution.SubstitutionCipher
 
 class CaesarCipher(shift: Int) extends SubstitutionCipher {
   lazy val substitution: String =

@@ -1,4 +1,4 @@
-package example.monoaphabetic
+package example.substitution
 
 import example.Cipher
 

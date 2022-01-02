@@ -1,6 +1,6 @@
-package example.monoalphabetic
+package example.substitution.monoalphabetic
 
-import example.monoaphabetic.{MixedAlphabetSubstitutionCipher => MACipher}
+import example.substitution.monoaphabetic.{MixedAlphabetSubstitutionCipher => MACipher}
 import org.scalatest._
 
 class MixedAlphabetSubstitutionCipherTest extends FlatSpec with Matchers {

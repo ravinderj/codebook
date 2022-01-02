@@ -1,6 +1,6 @@
-package example.monoalphabetic
+package example.substitution.monoalphabetic
 
-import example.monoaphabetic.CaesarCipher
+import example.substitution.monoaphabetic.CaesarCipher
 import org.scalatest._
 
 class CaesarCipherTest extends FlatSpec with Matchers {

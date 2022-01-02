@@ -7,7 +7,7 @@ trait Scrambler {
   def unscramble(char: Char): Char
 }
 
-class ShiftScrambler(shift: Int) extends Scrambler {
+class CaesarScrambler(shift: Int) extends Scrambler {
   override def scramble(char: Char): Char = {
     if (!alphabets.contains(char.toString)) char
     else {
@@ -26,3 +26,17 @@ class ShiftScrambler(shift: Int) extends Scrambler {
     }
   }
 }
+
+object AtbashScrambler extends Scrambler {
+  override def scramble(char: Char): Char = {
+    if (!alphabets.contains(char.toString)) char
+    else {
+      val currentPosition = alphabets.indexOf(char.toString) + 1
+      val nextPosition = alphabets.length - currentPosition
+      alphabets(nextPosition).charAt(0)
+    }
+  }
+
+  override def unscramble(char: Char): Char = scramble(char).toLower
+}
+

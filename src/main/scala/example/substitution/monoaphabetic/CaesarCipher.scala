@@ -1,13 +1,13 @@
 package example.substitution.monoaphabetic
 
 import example.Alphabets.alphabets
-import example.substitution.{ShiftScrambler, SubstitutionCipher}
+import example.substitution.{CaesarScrambler, SubstitutionCipher}
 
 class CaesarCipher(shift: Int) extends SubstitutionCipher {
   lazy val substitution: String =
     (alphabets.takeRight(alphabets.length - shift) ++ alphabets.take(shift))
       .mkString("")
-  val scrambler = new ShiftScrambler(shift)
+  val scrambler = new CaesarScrambler(shift)
 
   override def encipher(plainText: String): String = {
     plainText

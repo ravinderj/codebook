@@ -12,4 +12,14 @@ class PlayFairCipherTest extends FlatSpec with Matchers {
     val cipherText = new PlayFairCipher("JACK").encipher("jocker")
     cipherText shouldBe "KLKBMW"
   }
+
+  "Codebook" should "decode with PlayFair Cipher" in {
+    val plainText = new PlayFairCipher("CHARALES").decipher("HARLCFBW")
+    plainText shouldBe "charlesx"
+  }
+
+  "Codebook" should "decode some other word" in {
+    val plainText = new PlayFairCipher("JACK").decipher("ICMF")
+    plainText shouldBe "bane"
+  }
 }

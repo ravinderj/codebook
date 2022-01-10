@@ -1,5 +1,10 @@
 Codebook Cipher Challenge
-1st: Simple Monoalphabetic Substitution Cipher
+Simple Monoalphabetic Substitution Cipher:
     Atbash
     Caesar
     Mixed/Deranged Alphabet
+Polyalphabetic Substitution Cipher:
+    Vigenère
+    Enigma
+Polygraphic Cipher:
+    PlayFair

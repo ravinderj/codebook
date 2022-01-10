@@ -1,21 +1,27 @@
 package example.substitution.polygraphic
 
+import example.Alphabets.alphabets
 import example.Cipher
 
 import scala.annotation.tailrec
 
 class PlayFairCipher(key: String) extends Cipher {
 
-  private val alphabets = "ABCCDEFGHIKLMNOPQRSTUVWXYZ"
-  private val upperCasedKey = key.toUpperCase()
-  private val keyword = (upperCasedKey + alphabets).foldLeft("")((keyword, cur) =>
+  private val alphabetsWithoutJ = "ABCCDEFGHIKLMNOPQRSTUVWXYZ"
+  private val keyWithoutJ: String = key.replace('J', 'I').toUpperCase()
+  private val keyword = (keyWithoutJ + alphabetsWithoutJ).foldLeft("")((keyword, cur) => {
     if (!keyword.contains(cur))
-      keyword + cur else keyword)
+      keyword + cur else keyword
+  })
 
   private val playfairSquare = keyword
     .zipWithIndex
     .foldLeft(Map[Char, (Int, Int)]())((res, cur) => {
-      res + (cur._1 -> (cur._2 / 5, cur._2 % 5))
+      val charLoc = (cur._2 / 5, cur._2 % 5)
+      cur._1 match {
+        case 'I' => res + (cur._1 -> charLoc) +  ('J' -> charLoc)
+        case _ => res + (cur._1 -> charLoc)
+      }
     })
 
   override def encipher(plainText: String): String = {

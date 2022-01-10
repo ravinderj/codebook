@@ -7,4 +7,9 @@ class PlayFairCipherTest extends FlatSpec with Matchers {
     val cipherText = new PlayFairCipher("CHARALES").encipher("charles")
     cipherText shouldBe "HARLCFBW"
   }
+
+  "Codebook" should "encode with words containing J" in {
+    val cipherText = new PlayFairCipher("JACK").encipher("jocker")
+    cipherText shouldBe "KLKBMW"
+  }
 }

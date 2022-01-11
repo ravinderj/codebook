@@ -1,13 +1,13 @@
 package example.substitution.monoaphabetic
 
 import example.Alphabets.alphabets
-import example.substitution.{Scrambler, SubstitutionCipher}
+import example.substitution.{MonographicScrambler, MonographicSubstitutionCipher}
 
-class CaesarCipher(shift: Int) extends SubstitutionCipher {
+class CaesarCipher(shift: Int) extends MonographicSubstitutionCipher {
   val scrambler = new CaesarScrambler(shift)
 }
 
-class CaesarScrambler(shift: Int) extends Scrambler {
+class CaesarScrambler(shift: Int) extends MonographicScrambler {
   private val substitute = (
     alphabets.takeRight(alphabets.length - shift)
       ++ alphabets.take(shift)

@@ -1,13 +1,13 @@
 package example.substitution.monoaphabetic
 
 import example.Alphabets.alphabets
-import example.substitution.{Scrambler, SubstitutionCipher}
+import example.substitution.{MonographicScrambler, MonographicSubstitutionCipher}
 
-class AtbashCipher() extends SubstitutionCipher {
-  override val scrambler: Scrambler = AtbashScrambler
+class AtbashCipher() extends MonographicSubstitutionCipher {
+  override val scrambler: MonographicScrambler = AtbashScrambler
 }
 
-object AtbashScrambler extends Scrambler {
+object AtbashScrambler extends MonographicScrambler {
   private val substitute = alphabets.reverse.mkString("")
 
   override def scramble(char: Char, index: Int): Char = {

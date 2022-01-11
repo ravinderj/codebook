@@ -1,13 +1,13 @@
 package example.substitution.monoaphabetic
 
 import example.Alphabets.alphabets
-import example.substitution.{Scrambler, SubstitutionCipher}
+import example.substitution.{MonographicScrambler, MonographicSubstitutionCipher}
 
-class MixedAlphabetSubstitutionCipher(key: String) extends SubstitutionCipher {
+class MixedAlphabetCipher(key: String) extends MonographicSubstitutionCipher {
   override val scrambler = new MixedAlphabetScrambler(key)
 }
 
-class MixedAlphabetScrambler(key: String) extends Scrambler {
+class MixedAlphabetScrambler(key: String) extends MonographicScrambler {
   private val upperCasedKey = key.toUpperCase()
   private val substitute = upperCasedKey + alphabets
     .filterNot(upperCasedKey.contains(_))

@@ -1,13 +1,13 @@
 package example.substitution.polyalphabetic
 
 import example.Alphabets.alphabets
-import example.substitution.{Scrambler, SubstitutionCipher}
+import example.substitution.{MonographicScrambler, MonographicSubstitutionCipher}
 
-class VigenereCipher(key: String) extends SubstitutionCipher {
-  override protected val scrambler: Scrambler = new VigenereScrambler(key)
+class VigenereCipher(key: String) extends MonographicSubstitutionCipher {
+  override protected val scrambler: MonographicScrambler = new VigenereScrambler(key)
 }
 
-class VigenereScrambler(key: String) extends Scrambler {
+class VigenereScrambler(key: String) extends MonographicScrambler {
   private val upperCasedKey = key.toUpperCase()
   private val shifts = upperCasedKey.map(alphabets.indexOf)
 

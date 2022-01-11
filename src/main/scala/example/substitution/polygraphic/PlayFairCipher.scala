@@ -1,109 +1,91 @@
 package example.substitution.polygraphic
 
 import example.Alphabets.alphabets
-import example.Cipher
+import example.substitution.{PolygraphicScrambler, PolygraphicSubstitutionCipher}
 
-import scala.annotation.tailrec
+class PlayFairCipher(key: String) extends PolygraphicSubstitutionCipher {
+  val scrambler = new PlayFairScrambler(key)
+}
 
-class PlayFairCipher(key: String) extends Cipher {
-
+class PlayFairScrambler(key: String) extends PolygraphicScrambler {
   private val alphabetsWithoutJ = "ABCCDEFGHIKLMNOPQRSTUVWXYZ"
-  private val keyWithoutJ: String = key.replace('J', 'I').toUpperCase()
-  private val keyword = (keyWithoutJ + alphabetsWithoutJ).foldLeft("")((keyword, cur) => {
-    if (!keyword.contains(cur))
-      keyword + cur else keyword
-  })
+  private val keyWithoutJ: String = key
+    .replace('J', 'I')
+    .toUpperCase()
+  private val keyword = (keyWithoutJ + alphabetsWithoutJ)
+    .foldLeft("")((keyword, cur) => {
+      if (!keyword.contains(cur))
+        keyword + cur else keyword
+    })
 
   private val playfairSquare = keyword
     .zipWithIndex
     .foldLeft(Map[Char, (Int, Int)]())((res, cur) => {
       val charLoc = (cur._2 / 5, cur._2 % 5)
       cur._1 match {
-        case 'I' => res + (cur._1 -> charLoc) +  ('J' -> charLoc)
+        case 'I' => res + ('I' -> charLoc) + ('J' -> charLoc)
         case _ => res + (cur._1 -> charLoc)
       }
     })
 
-  override def encipher(plainText: String): String = {
-    @tailrec
-    def e(p: String, c: String = ""): String = {
-      if (p.isEmpty) return c
-      val charsRead = p match {
-        case a if a.length == 1 => (1, a(0) + "X")
-        case a if a(0) == a(1) => (1, a(0) + "X");
-        case a => (2, a.take(2))
-      }
-      e(p.substring(charsRead._1),
-        c + scramble(charsRead._2.toUpperCase()))
-    }
-
-    e(plainText.replaceAllLiterally(" ", ""))
+  override def scramble(pair: (Char, Char)): String = {
+    runScramblingRule(pair, new ScrambleRules(keyword))
   }
 
+  override def unscramble(pair: (Char, Char)): String = {
+    runScramblingRule(pair, new UnscrambleRules(keyword))
+  }
+
+  private def runScramblingRule(pair: (Char, Char), rules: PlayFairRules): String = {
+    if (!alphabets.contains(pair._1) || !alphabets.contains(pair._2)) return pair._1 + pair._2.toString
+    val (firstCharRow, firstCharCol) = playfairSquare(pair._1)
+    val (secondCharRow, secondCharCol) = playfairSquare(pair._2)
+    if (firstCharRow == secondCharRow)
+      rules.row(firstCharRow, firstCharCol) + rules.row(secondCharRow, secondCharCol).toString
+    else if (firstCharCol == secondCharCol)
+      rules.column(firstCharRow, firstCharCol) + rules.column(secondCharRow, secondCharCol).toString
+    else
+      rules.diagonal(firstCharRow, secondCharCol) + rules.diagonal(secondCharRow, firstCharCol).toString
+  }
+}
+
+trait PlayFairRules {
+  def row(row: Int, col: Int): Char
+
+  def column(row: Int, col: Int): Char
+
+  def diagonal(row: Int, col: Int): Char
+
+  protected def getLoc(row: Int, col: Int): Int = (row * 5) + col
+}
+
+class ScrambleRules(keyword: String) extends PlayFairRules {
+  override def row(row: Int, col: Int): Char = keyword.charAt(jumpToNextColumn(row, col))
+
+  override def column(row: Int, col: Int): Char = keyword.charAt(jumpToNextRow(row, col))
+
+  override def diagonal(row: Int, col: Int): Char = keyword.charAt(getLoc(row, col))
+
   private def getNext(num: Int): Int = (num + 1) % 5
+
+  private def jumpToNextColumn(row: Int, column: Int): Int = getLoc(row, getNext(column))
+
+  private def jumpToNextRow(row: Int, column: Int): Int = getLoc(getNext(row), column)
+}
+
+class UnscrambleRules(keyword: String) extends PlayFairRules {
+  override def row(row: Int, col: Int): Char = keyword.charAt(jumpToPrevColumn(row, col))
+
+  override def column(row: Int, col: Int): Char = keyword.charAt(jumpToPrevRow(row, col))
+
+  override def diagonal(row: Int, col: Int): Char = keyword.charAt(getLoc(row, col))
 
   private def getPrevious(num: Int): Int = num match {
     case 0 => 4
     case _ => (num - 1) % 5
   }
 
-  private def getLoc(row: Int, col: Int): Int = (row * 5) + col
-
-  private def jumpColumn(row: Int, column: Int): Int = getLoc(row, getNext(column))
-
   private def jumpToPrevColumn(row: Int, column: Int): Int = getLoc(row, getPrevious(column))
 
-  private def jumpRow(row: Int, column: Int): Int = getLoc(getNext(row), column)
-
   private def jumpToPrevRow(row: Int, column: Int): Int = getLoc(getPrevious(row), column)
-
-  private def getNextInRow(row: Int, col: Int): Char = keyword.charAt(jumpColumn(row, col))
-
-  private def getPrevInRow(row: Int, col: Int): Char = keyword.charAt(jumpToPrevColumn(row, col))
-
-  private def getNextInCol(row: Int, col: Int): Char = keyword.charAt(jumpRow(row, col))
-
-  private def getPrevInCol(row: Int, col: Int): Char = keyword.charAt(jumpToPrevRow(row, col))
-
-  private def getCharIn(row: Int, col: Int) = keyword.charAt(getLoc(row, col))
-
-  private def scramble(pair: String): String = {
-    if (!alphabets.contains(pair(0)) || !alphabets.contains(pair(1))) return pair
-    val (firstCharRow, firstCharCol) = playfairSquare(pair(0))
-    val (secondCharRow, secondCharCol) = playfairSquare(pair(1))
-    if (firstCharRow == secondCharRow) {
-      "" + getNextInRow(firstCharRow, firstCharCol) + getNextInRow(secondCharRow, secondCharCol)
-    } else if (firstCharCol == secondCharCol)
-      "" + getNextInCol(firstCharRow, firstCharCol) + getNextInCol(secondCharRow, secondCharCol)
-    else
-      "" + getCharIn(firstCharRow, secondCharCol) + getCharIn(secondCharRow, firstCharCol)
-  }
-
-  private def descramble(pair: String): String = {
-    if (!alphabets.contains(pair(0)) || !alphabets.contains(pair(1))) return pair
-    val (firstCharRow, firstCharCol) = playfairSquare(pair(0))
-    val (secondCharRow, secondCharCol) = playfairSquare(pair(1))
-    if (firstCharRow == secondCharRow) {
-      "" + getPrevInRow(firstCharRow, firstCharCol) + getPrevInRow(secondCharRow, secondCharCol)
-    } else if (firstCharCol == secondCharCol)
-      "" + getPrevInCol(firstCharRow, firstCharCol) + getPrevInCol(secondCharRow, secondCharCol)
-    else
-      "" + getCharIn(firstCharRow, secondCharCol) + getCharIn(secondCharRow, firstCharCol)
-  }
-
-  override def decipher(enciphered: String): String = {
-    @tailrec
-    def d(p: String, c: String = ""): String = {
-      if (p.isEmpty) return c
-      val charsRead = p match {
-        case a if a.length == 1 => (1, a(0) + "X")
-        case a if a(0) == a(1) => (1, a(0) + "X");
-        case a => (2, a.take(2))
-      }
-      d(p.substring(charsRead._1),
-        c + descramble(charsRead._2.toUpperCase()).toLowerCase())
-    }
-
-    d(enciphered.replaceAllLiterally(" ", ""))
-  }
 }

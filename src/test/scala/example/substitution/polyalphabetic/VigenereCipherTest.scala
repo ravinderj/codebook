@@ -9,7 +9,7 @@ class VigenereCipherTest extends FlatSpec with Matchers {
   }
 
   "Codebook" should "decode Vigenere Cipher" in {
-    val cipherText = new VigenereCipher("LEMON").decipher("LXFOPVEFRNHR")
-    cipherText shouldBe "attackatdawn"
+    val plainText = new VigenereCipher("LEMON").decipher("LXFOPVEFRNHR")
+    plainText shouldBe "attackatdawn"
   }
 }
